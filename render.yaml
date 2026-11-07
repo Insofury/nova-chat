@@ -1,0 +1,25 @@
+# Render Blueprint - one-click deploy: https://render.com/deploy
+# Render builds the app straight from this GitHub repo and gives it a public URL.
+services:
+  - type: web
+    name: novachat
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips='*'
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: TRUST_PROXY
+        value: "true"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "20"
+      # Paste your key in the Render dashboard when prompted (never commit it).
+      # Leave it empty to run in demo mode.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # Optional: require visitors to enter this code before chatting.
+      - key: ACCESS_CODE
+        sync: false
